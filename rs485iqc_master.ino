@@ -2,7 +2,7 @@
 #define RS485Transmit    HIGH
 #define RS485Receive     LOW 
 #define SLAVE   1
-#define LOOPTIME 500
+#define LOOPTIME 100
 
 void setup() {
   // put your setup code here, to run once:
@@ -11,7 +11,7 @@ void setup() {
   digitalWrite(8, RS485Receive); //DE,RE=LOW, RX enabled
 
   Serial.begin(115200);     // Console 
-  Serial1.begin (115200);  // TO MAX485
+  Serial1.begin (1000000);  // TO MAX485
 }
 
 int recv;
@@ -31,7 +31,7 @@ void loop() {
     
     sendCmd(i, SLAVE);
     recv = read_slave(SLAVE);
-    delay(1);    
+      
 
     Serial.print("Got: ");
     Serial.println(recv, HEX);
@@ -68,23 +68,14 @@ int read_slave(int slave)
               byte rH=commandArray[1]; //high byte
               char rP=commandArray[2]; //stop byte
 
-              Serial.print(rT, HEX);
-              Serial.print(rA, HEX);
-              Serial.print(rH, HEX);
-              Serial.print(rP, HEX);
+            
               
               if(rP=='}' && rA==slave)         
-              {             
-                  
+              {                
                   return rH;
-              } else {
-                return 89;
-
-              }
+              } 
           }
-  } else {
-    return 88;
-  }
+  } 
     
   
 }
@@ -102,8 +93,8 @@ void sendCmd(int cmd,int slave)
   Serial1.write(sA); 
   Serial1.write(sH); 
   Serial1.write(sP);
-  delayMicroseconds(300);
+  delayMicroseconds(10);
   digitalWrite(8, RS485Receive); //DE,RE=LOW, RX enabled
-  delay(1);  // delay 1ms
+  delayMicroseconds(100);  
 }
 
